@@ -6,16 +6,20 @@ const NewsSection = () => {
   const [loading, setLoading] = useState(false)
 
   const feeds = {
+    // ✅ FOOTBALL PRIORITY + OTHER SPORTS
     sports:
-      "https://news.google.com/rss/search?q=sports&hl=en&gl=US&ceid=US:en", // 🌍 GLOBAL SPORTS
+      "https://news.google.com/rss/search?q=football%20OR%20premier%20league%20OR%20champions%20league%20OR%20sports&hl=en&gl=US&ceid=US:en",
+
     politics:
       "https://news.google.com/rss/search?q=politics&hl=en&gl=US&ceid=US:en",
+
     entertainment:
       "https://news.google.com/rss/search?q=entertainment&hl=en&gl=US&ceid=US:en"
   }
 
   const fetchNews = async () => {
     setLoading(true)
+
     try {
       const rssUrl = feeds[category]
 
@@ -25,12 +29,16 @@ const NewsSection = () => {
 
       const data = await res.json()
 
-      if (data.status === "ok") setNews(data.items.slice(0, 6))
-      else setNews([])
+      if (data.status === "ok") {
+        setNews(data.items.slice(0, 6))
+      } else {
+        setNews([])
+      }
     } catch (err) {
       console.error(err)
       setNews([])
     }
+
     setLoading(false)
   }
 
@@ -40,6 +48,7 @@ const NewsSection = () => {
 
   const formatDate = (pubDate) => {
     const date = new Date(pubDate)
+
     return date.toLocaleString("en-US", {
       weekday: "short",
       day: "numeric",
@@ -52,7 +61,9 @@ const NewsSection = () => {
   }
 
   const styles = {
-    container: { padding: "20px" },
+    container: {
+      padding: "20px"
+    },
 
     title: {
       fontSize: "24px",
@@ -63,7 +74,8 @@ const NewsSection = () => {
     tabs: {
       display: "flex",
       gap: "15px",
-      marginBottom: "20px"
+      marginBottom: "20px",
+      flexWrap: "wrap"
     },
 
     tab: (active) => ({
@@ -83,13 +95,14 @@ const NewsSection = () => {
 
     card: {
       border: "1px solid #ddd",
-      padding: "12px",
-      borderRadius: "8px",
+      padding: "15px",
+      borderRadius: "10px",
       background: "#fff",
       transition: "0.2s",
       display: "flex",
       flexDirection: "column",
-      justifyContent: "space-between"
+      justifyContent: "space-between",
+      boxShadow: "0 2px 10px rgba(0,0,0,0.08)"
     },
 
     link: {
@@ -97,10 +110,15 @@ const NewsSection = () => {
       color: "#111"
     },
 
+    newsTitle: {
+      lineHeight: "1.5",
+      fontSize: "17px"
+    },
+
     newsDate: {
       fontSize: "12px",
       color: "#555",
-      marginTop: "8px"
+      marginTop: "10px"
     },
 
     empty: {
@@ -156,9 +174,14 @@ const NewsSection = () => {
               rel="noreferrer"
               style={styles.link}
             >
-              <h4>{item.title}</h4>
+              <h4 style={styles.newsTitle}>
+                {item.title}
+              </h4>
             </a>
-            <span style={styles.newsDate}>{formatDate(item.pubDate)}</span>
+
+            <span style={styles.newsDate}>
+              {formatDate(item.pubDate)}
+            </span>
           </div>
         ))}
       </div>

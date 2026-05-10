@@ -116,7 +116,7 @@ const Sports = () => {
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>
-        ⚽ Football & Global Sports News
+        ⚽ Global Sports News
       </h1>
 
       {loading && (

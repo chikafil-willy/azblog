@@ -5,6 +5,7 @@ import logo from "../assets/logo.png"
 const Navbar = ({ setSearch }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  const [input, setInput] = useState("")
 
   useEffect(() => {
     const handleResize = () => {
@@ -16,9 +17,18 @@ const Navbar = ({ setSearch }) => {
     }
 
     window.addEventListener("resize", handleResize)
-
     return () => window.removeEventListener("resize", handleResize)
   }, [])
+
+  const handleChange = (e) => {
+    setInput(e.target.value)
+    setSearch(e.target.value)
+  }
+
+  const clearSearch = () => {
+    setInput("")
+    setSearch("")
+  }
 
   const styles = {
     nav: {
@@ -49,13 +59,28 @@ const Navbar = ({ setSearch }) => {
       cursor: "pointer"
     },
 
+    searchBox: {
+      position: "relative",
+      display: "flex",
+      alignItems: "center"
+    },
+
     searchInput: {
-      padding: "8px 12px",
-      borderRadius: "6px",
+      padding: "8px 35px 8px 14px",
+      borderRadius: "25px", // ✅ more curved
       border: "none",
       outline: "none",
-      width: isMobile ? "140px" : "220px", // ✅ smaller on mobile
+      width: isMobile ? "140px" : "220px",
       fontSize: "14px"
+    },
+
+    clearIcon: {
+      position: "absolute",
+      right: "10px",
+      cursor: "pointer",
+      fontSize: "14px",
+      color: "#777",
+      userSelect: "none"
     },
 
     desktopLinks: {
@@ -120,13 +145,24 @@ const Navbar = ({ setSearch }) => {
 
       {/* RIGHT SIDE */}
       <div style={styles.rightSection}>
+
         {/* SEARCH */}
-        <input
-          type="text"
-          placeholder="Search..."
-          style={styles.searchInput}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <div style={styles.searchBox}>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={input}
+            style={styles.searchInput}
+            onChange={handleChange}
+          />
+
+          {/* CLEAR ICON */}
+          {input && (
+            <span style={styles.clearIcon} onClick={clearSearch}>
+              ✖
+            </span>
+          )}
+        </div>
 
         {/* DESKTOP LINKS */}
         {!isMobile && (
