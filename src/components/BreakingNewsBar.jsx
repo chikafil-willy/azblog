@@ -7,39 +7,36 @@ const BreakingNewsBar = () => {
   const fetchNews = async () => {
     try {
       const rssUrl =
-        "https://news.google.com/rss?hl=en-NG&gl=NG&ceid=NG:en"
+        "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en"
 
-      const res = await fetch(
-        `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`
-      )
+      // ✅ USE RSS2JSON (MORE STABLE ON VERCEL)
+      const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(
+        rssUrl
+      )}`
 
+      const res = await fetch(apiUrl)
       const data = await res.json()
 
-      const parser = new DOMParser()
-      const xml = parser.parseFromString(data.contents, "text/xml")
+      if (data.status === "ok") {
+        const now = new Date()
 
-      const items = [...xml.querySelectorAll("item")]
+        const breaking = data.items.filter((item) => {
+          const pubDate = new Date(item.pubDate)
+          const diffHours = (now - pubDate) / (1000 * 60 * 60)
 
-      const newsItems = items.map(item => ({
-        title: item.querySelector("title")?.textContent,
-        link: item.querySelector("link")?.textContent,
-        pubDate: item.querySelector("pubDate")?.textContent
-      }))
+          return diffHours <= 6
+        })
 
-      const now = new Date()
-
-      const breaking = newsItems.filter(item => {
-        const pubDate = new Date(item.pubDate)
-        const diffHours = (now - pubDate) / (1000 * 60 * 60)
-        return diffHours <= 6
-      })
-
-      setNews(breaking.slice(0, 10))
-      setLoading(false)
+        setNews(breaking.slice(0, 10))
+      } else {
+        setNews([])
+      }
     } catch (err) {
       console.error("News fetch error:", err)
-      setLoading(false)
+      setNews([])
     }
+
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -76,38 +73,50 @@ const BreakingNewsBar = () => {
       display: "inline-block",
       whiteSpace: "nowrap",
       paddingLeft: "100%",
-      animation: "scroll 120s linear infinite" // 🔥 MUCH SLOWER
+      animation: "scroll 120s linear infinite"
     },
 
     link: {
       color: "#fff",
       textDecoration: "none",
-      marginRight: "80px"
+      marginRight: "80px",
+      fontSize: "14px"
+    },
+
+    message: {
+      paddingLeft: "20px",
+      fontSize: "14px"
     }
   }
 
   return (
-    <div style={styles.bar}>
-      <div style={styles.label}>NEWS UPDATE</div>
+    <>
+      <div style={styles.bar}>
+        <div style={styles.label}>NEWS UPDATE</div>
 
-      <div style={styles.wrapper}>
-        <div style={styles.track}>
+        <div style={styles.wrapper}>
           {loading ? (
-            <span>Loading breaking news...</span>
+            <div style={styles.message}>
+              Loading breaking news...
+            </div>
           ) : news.length === 0 ? (
-            <span>No breaking news available</span>
+            <div style={styles.message}>
+              No breaking news available
+            </div>
           ) : (
-            news.map((item, i) => (
-              <a
-                key={i}
-                href={item.link}
-                target="_blank"
-                rel="noreferrer"
-                style={styles.link}
-              >
-                🔴 {item.title}
-              </a>
-            ))
+            <div style={styles.track}>
+              {news.map((item, i) => (
+                <a
+                  key={i}
+                  href={item.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={styles.link}
+                >
+                  🔴 {item.title}
+                </a>
+              ))}
+            </div>
           )}
         </div>
       </div>
@@ -118,13 +127,14 @@ const BreakingNewsBar = () => {
             0% {
               transform: translateX(0);
             }
+
             100% {
               transform: translateX(-100%);
             }
           }
         `}
       </style>
-    </div>
+    </>
   )
 }
 
