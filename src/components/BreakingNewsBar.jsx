@@ -6,7 +6,7 @@ const BreakingNewsBar = () => {
 
   const fetchNews = async () => {
     try {
-      // ✅ NIGERIAN BREAKING NEWS
+      // NIGERIAN BREAKING NEWS
       const rssUrl =
         "https://news.google.com/rss/search?q=Nigeria&hl=en-NG&gl=NG&ceid=NG:en"
 
@@ -22,9 +22,11 @@ const BreakingNewsBar = () => {
 
         const breaking = data.items.filter((item) => {
           const pubDate = new Date(item.pubDate)
-          const diffHours = (now - pubDate) / (1000 * 60 * 60)
 
-          return diffHours <= 12 // ✅ LAST 12 HOURS
+          const diffHours =
+            (now - pubDate) / (1000 * 60 * 60)
+
+          return diffHours <= 12
         })
 
         setNews(breaking.slice(0, 12))
@@ -51,36 +53,39 @@ const BreakingNewsBar = () => {
       overflow: "hidden",
       display: "flex",
       alignItems: "center",
-      height: "40px"
+      height: "42px"
     },
 
     label: {
       background: "#991b1b",
-      padding: "0 15px",
+      padding: "0 18px",
       fontWeight: "bold",
       height: "100%",
       display: "flex",
       alignItems: "center",
-      zIndex: 2
+      zIndex: 2,
+      whiteSpace: "nowrap",
+      fontSize: "14px"
     },
 
     wrapper: {
       flex: 1,
-      overflow: "hidden"
+      overflow: "hidden",
+      position: "relative"
     },
 
-    track: {
-      display: "inline-block",
-      whiteSpace: "nowrap",
-      paddingLeft: "100%",
-      animation: "scroll 120s linear infinite"
+    ticker: {
+      display: "flex",
+      width: "max-content",
+      animation: "ticker 18s linear infinite"
     },
 
     link: {
       color: "#fff",
       textDecoration: "none",
-      marginRight: "80px",
-      fontSize: "14px"
+      marginRight: "70px",
+      fontSize: "14px",
+      whiteSpace: "nowrap"
     },
 
     message: {
@@ -92,8 +97,12 @@ const BreakingNewsBar = () => {
   return (
     <>
       <div style={styles.bar}>
-        <div style={styles.label}>NEWS UPDATE</div>
+        {/* LABEL */}
+        <div style={styles.label}>
+          🔴 NEWS UPDATE
+        </div>
 
+        {/* NEWS WRAPPER */}
         <div style={styles.wrapper}>
           {loading ? (
             <div style={styles.message}>
@@ -104,8 +113,11 @@ const BreakingNewsBar = () => {
               No breaking news available
             </div>
           ) : (
-            <div style={styles.track}>
-              {news.map((item, i) => (
+            <div
+              className="ticker"
+              style={styles.ticker}
+            >
+              {[...news, ...news].map((item, i) => (
                 <a
                   key={i}
                   href={item.link}
@@ -123,14 +135,18 @@ const BreakingNewsBar = () => {
 
       <style>
         {`
-          @keyframes scroll {
+          @keyframes ticker {
             0% {
               transform: translateX(0);
             }
 
             100% {
-              transform: translateX(-100%);
+              transform: translateX(-50%);
             }
+          }
+
+          .ticker:hover {
+            animation-play-state: paused;
           }
         `}
       </style>

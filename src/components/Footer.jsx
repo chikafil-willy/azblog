@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { Link } from "react-router-dom"
 import { supabase } from "../supabaseClient"
 
 const Footer = () => {
@@ -16,7 +17,7 @@ const Footer = () => {
       .insert([{ email }])
 
     if (error) {
-      // ✅ DUPLICATE EMAIL
+      // DUPLICATE EMAIL
       if (error.code === "23505") {
         setMessage("This email is already subscribed")
       } else {
@@ -33,13 +34,15 @@ const Footer = () => {
       backgroundColor: "#0f172a",
       color: "#fff",
       padding: "40px 20px",
-      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      fontFamily:
+        "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
       marginTop: "50px"
     },
 
     grid: {
       display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+      gridTemplateColumns:
+        "repeat(auto-fit, minmax(220px, 1fr))",
       gap: "30px",
       marginBottom: "30px"
     },
@@ -75,16 +78,17 @@ const Footer = () => {
     },
 
     input: {
-      padding: "10px",
-      borderRadius: "5px",
+      padding: "12px",
+      borderRadius: "25px",
       border: "none",
       marginBottom: "10px",
-      outline: "none"
+      outline: "none",
+      fontSize: "14px"
     },
 
     button: {
-      padding: "10px",
-      borderRadius: "5px",
+      padding: "12px",
+      borderRadius: "25px",
       border: "none",
       backgroundColor: "#38bdf8",
       color: "#0f172a",
@@ -119,14 +123,15 @@ const Footer = () => {
   return (
     <footer style={styles.container}>
       <div style={styles.grid}>
+
         {/* ABOUT */}
         <div style={styles.column}>
           <h4 style={styles.colTitle}>About AzBlog</h4>
 
           <p style={styles.contact}>
-            AzBlog is a professional blog sharing latest news,
-            articles, and insights on Sports, Politics,
-            Entertainment, and more.
+            AzBlog is a professional blog sharing latest
+            news, articles, and insights on Sports,
+            Politics, Entertainment, and more.
           </p>
         </div>
 
@@ -135,19 +140,20 @@ const Footer = () => {
           <h4 style={styles.colTitle}>Quick Links</h4>
 
           {links.map((link, i) => (
-            <a
+            <Link
               key={i}
-              href={link.path}
+              to={link.path}
               style={styles.link}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.color = "#38bdf8")
+                (e.currentTarget.style.color =
+                  "#38bdf8")
               }
               onMouseLeave={(e) =>
                 (e.currentTarget.style.color = "#fff")
               }
             >
               {link.name}
-            </a>
+            </Link>
           ))}
         </div>
 
@@ -177,7 +183,9 @@ const Footer = () => {
               placeholder="Your email"
               style={styles.input}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) =>
+                setEmail(e.target.value)
+              }
             />
 
             <button
