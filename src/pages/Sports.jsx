@@ -6,21 +6,28 @@ const Sports = () => {
 
   const fetchNews = async () => {
     setLoading(true)
+
     try {
+      // ✅ FOOTBALL PRIORITY + OTHER SPORTS
       const rssUrl =
-        "https://news.google.com/rss/search?q=sports&hl=en&gl=US&ceid=US:en"
+        "https://news.google.com/rss/search?q=football%20OR%20premier%20league%20OR%20champions%20league%20OR%20sports&hl=en&gl=US&ceid=US:en"
 
       const res = await fetch(
         `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`
       )
+
       const data = await res.json()
 
-      if (data.status === "ok") setNews(data.items.slice(0, 8))
-      else setNews([])
+      if (data.status === "ok") {
+        setNews(data.items.slice(0, 12))
+      } else {
+        setNews([])
+      }
     } catch (err) {
       console.error(err)
       setNews([])
     }
+
     setLoading(false)
   }
 
@@ -37,6 +44,7 @@ const Sports = () => {
       backgroundColor: "#f4f6f8",
       minHeight: "100vh"
     },
+
     title: {
       fontSize: "28px",
       fontWeight: "bold",
@@ -45,40 +53,45 @@ const Sports = () => {
       textAlign: "center",
       letterSpacing: "1px"
     },
+
     grid: {
       display: "grid",
       gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
       gap: "25px"
     },
+
     card: {
       background: "linear-gradient(145deg, #38bdf8, #06b6d4)",
       color: "#fff",
       padding: "25px",
       borderRadius: "15px",
       boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
-      transition: "all 0.3s ease",
+      transition: "0.3s ease",
       cursor: "pointer",
-      minHeight: "150px",
+      minHeight: "180px",
       display: "flex",
       flexDirection: "column",
-      alignItems: "center",
       justifyContent: "center",
       textAlign: "center"
     },
+
     link: {
       color: "inherit",
       textDecoration: "none"
     },
+
     newsTitle: {
       fontSize: "18px",
       fontWeight: "600",
       lineHeight: "1.5",
-      marginBottom: "10px"
+      marginBottom: "12px"
     },
+
     newsDate: {
       fontSize: "14px",
-      opacity: 0.85
+      opacity: 0.9
     },
+
     loading: {
       textAlign: "center",
       fontSize: "20px",
@@ -88,6 +101,7 @@ const Sports = () => {
 
   const formatDate = (pubDate) => {
     const date = new Date(pubDate)
+
     return date.toLocaleString("en-US", {
       weekday: "short",
       day: "numeric",
@@ -101,10 +115,15 @@ const Sports = () => {
 
   return (
     <div style={styles.container}>
-      {/* ✅ UPDATED TITLE */}
-      <h1 style={styles.title}>⚽ Global Sports News</h1>
+      <h1 style={styles.title}>
+        ⚽ Football & Global Sports News
+      </h1>
 
-      {loading && <p style={styles.loading}>Loading...</p>}
+      {loading && (
+        <p style={styles.loading}>
+          Loading sports news...
+        </p>
+      )}
 
       <div style={styles.grid}>
         {news.map((item, i) => (
@@ -116,7 +135,10 @@ const Sports = () => {
             style={styles.link}
           >
             <div style={styles.card}>
-              <h4 style={styles.newsTitle}>{item.title}</h4>
+              <h4 style={styles.newsTitle}>
+                {item.title}
+              </h4>
+
               <span style={styles.newsDate}>
                 {formatDate(item.pubDate)}
               </span>

@@ -6,10 +6,10 @@ const BreakingNewsBar = () => {
 
   const fetchNews = async () => {
     try {
+      // ✅ NIGERIAN BREAKING NEWS
       const rssUrl =
-        "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en"
+        "https://news.google.com/rss/search?q=Nigeria&hl=en-NG&gl=NG&ceid=NG:en"
 
-      // ✅ USE RSS2JSON (MORE STABLE ON VERCEL)
       const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(
         rssUrl
       )}`
@@ -24,10 +24,10 @@ const BreakingNewsBar = () => {
           const pubDate = new Date(item.pubDate)
           const diffHours = (now - pubDate) / (1000 * 60 * 60)
 
-          return diffHours <= 6
+          return diffHours <= 12 // ✅ LAST 12 HOURS
         })
 
-        setNews(breaking.slice(0, 10))
+        setNews(breaking.slice(0, 12))
       } else {
         setNews([])
       }
