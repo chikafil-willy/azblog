@@ -77,7 +77,7 @@ const BreakingNewsBar = () => {
     ticker: {
       display: "flex",
       width: "max-content",
-      animation: "ticker 55s linear infinite"
+      animation: "ticker 59s linear infinite"
     },
 
     link: {
@@ -99,7 +99,7 @@ const BreakingNewsBar = () => {
       <div style={styles.bar}>
         {/* LABEL */}
         <div style={styles.label}>
-          🔴 NEWS
+          🔴NEWS
         </div>
 
         {/* NEWS WRAPPER */}
