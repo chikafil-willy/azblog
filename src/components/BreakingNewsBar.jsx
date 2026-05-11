@@ -77,7 +77,7 @@ const BreakingNewsBar = () => {
     ticker: {
       display: "flex",
       width: "max-content",
-      animation: "ticker 38s linear infinite"
+      animation: "ticker 48s linear infinite"
     },
 
     link: {
